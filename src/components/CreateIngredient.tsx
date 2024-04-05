@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState } from "react";
-import axios from "../api/axios";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import "./../utilities/modalWindow.scss";
@@ -11,19 +10,22 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
-
-const CREATE_INGREDIENT_URL = "/ingridients";
+import useAppDispatch from "../hooks/useAppDispatch";
+import { IngredientPayload, createIngredient } from "../store/ingredientsSlice";
+import axios from "../api/axios";
 
 type NumberInput = number | "";
 
 interface CreateIngredientProps {
-  children: React.ReactElement;
+  children?: React.ReactElement;
 }
 
 const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
+  const dispatch = useAppDispatch();
+
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>("");
   const [calories, setCalories] = useState<NumberInput>("");
   const [proteins, setProteins] = useState<NumberInput>("");
   const [fats, setFats] = useState<NumberInput>("");
@@ -49,25 +51,24 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
       setCalories("");
     }
     if (!Number(value) || value.length > 3) {
-      console.log("return");
       return;
     }
     setState(Number(value));
   };
 
-  async function createIngredient(event: React.SyntheticEvent): Promise<void> {
+  async function handleCreateIngredient(event: React.SyntheticEvent) {
     event.preventDefault();
-    const payload = {
-      name,
-      calories,
-      proteins,
-      fats,
-      carbohydrates,
-      files: [],
-    };
-    await axios.post(CREATE_INGREDIENT_URL, payload);
-    resetCreation();
-    handleClose();
+    if (name && calories && proteins && fats && carbohydrates) {
+      const payload: IngredientPayload = {
+        name,
+        calories,
+        proteins,
+        fats,
+        carbohydrates,
+        files: [],
+      };
+      const response = await dispatch(createIngredient(payload));
+    }
   }
 
   return (
@@ -80,7 +81,7 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
         aria-describedby="modal-modal-description"
       >
         <div className="modalWindow w-[200px]">
-          <form autoComplete="false" onSubmit={createIngredient}>
+          <form autoComplete="false" onSubmit={handleCreateIngredient}>
             <Card sx={{ width: 200, height: 400 }}>
               <CardMedia
                 component="img"

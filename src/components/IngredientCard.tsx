@@ -6,8 +6,23 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
+import React from "react";
 
-function IngredientCard() {
+interface IngredientCardProps {
+  name: string;
+  calories: number;
+  proteins: number;
+  fats: number;
+  carbohydrates: number;
+}
+
+const IngredientCard: React.FC<IngredientCardProps> = ({
+  name,
+  calories,
+  proteins,
+  fats,
+  carbohydrates,
+}) => {
   return (
     <div>
       <CardActionArea sx={{}}>
@@ -19,21 +34,21 @@ function IngredientCard() {
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div" align="left">
-              Title
+              {name}
             </Typography>
 
             <Divider sx={{ mt: 1 }} />
             <div className="mt-3 gap-y-1 flex flex-col items-start">
-              <Typography>Calories: 100</Typography>
-              <Typography>Proteins: 100</Typography>
-              <Typography>Fats: 100</Typography>
-              <Typography>Carbohydrates: 100</Typography>
+              <Typography>Calories: {calories}</Typography>
+              <Typography>Proteins: {proteins}</Typography>
+              <Typography>Fats: {fats}</Typography>
+              <Typography>Carbohydrates: {carbohydrates}</Typography>
             </div>
           </CardContent>
         </Card>
       </CardActionArea>
     </div>
   );
-}
+};
 
 export default IngredientCard;
