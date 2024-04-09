@@ -74,7 +74,7 @@ function Ingredients() {
         </CreateIngredient>
       </div>
       <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-10 mt-[50px] items-center max-w-[976px]">
-        {/* <IngredientsList /> */}
+        <IngredientsList />
       </div>
     </div>
   );

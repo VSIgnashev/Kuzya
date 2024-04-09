@@ -11,7 +11,11 @@ import {
   TextField,
 } from "@mui/material";
 import useAppDispatch from "../hooks/useAppDispatch";
-import { IngredientPayload, createIngredient } from "../store/ingredientsSlice";
+import {
+  IngredientPayload,
+  createIngredient,
+  fetchIngredients,
+} from "../store/ingredientsSlice";
 import { createError, createSuccessMessage } from "../store/snackbarSlice";
 
 type NumberInput = number | "";
@@ -77,7 +81,10 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
             dispatch(createError(error?.message));
           }
         })
-        .finally(() => setOpen(false));
+        .finally(() => {
+          setOpen(false);
+          dispatch(fetchIngredients());
+        });
     }
   }
 
