@@ -1,11 +1,5 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  PayloadAction,
-  AnyAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, AnyAction } from "@reduxjs/toolkit";
 import axios from "../api/axios";
-import { AxiosError, isAxiosError } from "axios";
 
 const GET_INGREDIENTS_URL = "/ingridients";
 const CREATE_INGREDIENT_URL = "/ingridients";
@@ -32,7 +26,6 @@ export type IngredientPayload = {
 type IngredientsState = {
   list: Ingredient[];
   loading: boolean;
-  error: string | null;
 };
 
 export const fetchIngredients = createAsyncThunk<
@@ -61,48 +54,27 @@ export const createIngredient = createAsyncThunk<
 const initialState: IngredientsState = {
   list: [],
   loading: false,
-  error: null,
 };
 
 const ingredientsSlice = createSlice({
   name: "ingredients",
   initialState,
-  reducers: {
-    resetError(state) {
-      console.log(state);
-      state.error = null;
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchIngredients.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
 
       .addCase(fetchIngredients.fulfilled, (state, action) => {
         state.list = action.payload;
         state.loading = false;
-      })
-      .addCase(fetchIngredients.rejected, (state, action) => {
-        if (typeof action.error.message === "string") {
-          state.error = action.error.message;
-        }
-      })
-      .addCase(createIngredient.rejected, (state, action) => {
-        if (action.error.message) {
-          state.error = action.error.message;
-        }
-
-        state.loading = false;
       });
   },
 });
 
-export const { resetError } = ingredientsSlice.actions;
-
 export default ingredientsSlice.reducer;
 
-function isError(action: AnyAction) {
-  return action.type.endsWith("rejected");
-}
+// function isError(action: AnyAction) {
+//   return action.type.endsWith("rejected");
+// }

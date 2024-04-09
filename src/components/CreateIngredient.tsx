@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import useAppDispatch from "../hooks/useAppDispatch";
 import { IngredientPayload, createIngredient } from "../store/ingredientsSlice";
-import axios from "../api/axios";
+import { createError, createSuccessMessage } from "../store/snackbarSlice";
 
 type NumberInput = number | "";
 
@@ -34,13 +34,13 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const resetCreation = () => {
-    setName("");
-    setCalories("");
-    setProteins("");
-    setFats("");
-    setCarbohydrates("");
-  };
+  // const resetCreation = () => {       // create reset button
+  //   setName("");
+  //   setCalories("");
+  //   setProteins("");
+  //   setFats("");
+  //   setCarbohydrates("");
+  // };
 
   const handleNumberInput = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -67,13 +67,23 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
         carbohydrates,
         files: [],
       };
-      const response = await dispatch(createIngredient(payload));
+      await dispatch(createIngredient(payload))
+        .unwrap()
+        .then((res) => {
+          dispatch(createSuccessMessage(res));
+        })
+        .catch((error) => {
+          if (error?.name == "AxiosError") {
+            dispatch(createError(error?.message));
+          }
+        })
+        .finally(() => setOpen(false));
     }
   }
 
   return (
     <div className="mt-[50px]">
-      <Button onClick={handleOpen}>{children}</Button>
+      <div onClick={handleOpen}>{children}</div>
       <Modal
         open={open}
         onClose={handleClose}

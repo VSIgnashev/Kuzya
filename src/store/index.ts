@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ingredientsReducer from "./ingredientsSlice";
+import snackbarReducer from "./snackbarSlice";
 
 const store = configureStore({
   reducer: {
     ingredients: ingredientsReducer,
+    snackbars: snackbarReducer,
   },
 });
 
