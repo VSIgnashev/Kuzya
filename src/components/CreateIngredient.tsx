@@ -38,13 +38,14 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // const resetCreation = () => {       // create reset button
-  //   setName("");
-  //   setCalories("");
-  //   setProteins("");
-  //   setFats("");
-  //   setCarbohydrates("");
-  // };
+  const discardCreation = () => {
+    // create reset button
+    setName("");
+    setCalories("");
+    setProteins("");
+    setFats("");
+    setCarbohydrates("");
+  };
 
   const handleNumberInput = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -84,6 +85,7 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
         .finally(() => {
           setOpen(false);
           dispatch(fetchIngredients());
+          discardCreation();
         });
     }
   }
