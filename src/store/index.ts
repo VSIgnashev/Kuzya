@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ingredientsReducer from "./ingredientsSlice";
 import snackbarReducer from "./snackbarSlice";
+import uploadImageReducer from "./uploadImageSlice";
 
 const store = configureStore({
   reducer: {
     ingredients: ingredientsReducer,
     snackbars: snackbarReducer,
+    uploadImage: uploadImageReducer,
   },
 });
 

@@ -7,6 +7,7 @@ import CreateIngredient from "../../components/CreateIngredient";
 
 import { resetError, resetSuccessMessage } from "../../store/snackbarSlice";
 import IngredientsList from "./IngredientsList";
+import UploadImage from "../../components/UploadImage";
 
 function Ingredients() {
   const dispatch = useAppDispatch();
@@ -49,6 +50,7 @@ function Ingredients() {
 
   return (
     <div className="">
+      <UploadImage />
       <Snackbar
         open={errorSnackbarOpen}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
