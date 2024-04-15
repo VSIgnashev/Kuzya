@@ -31,7 +31,6 @@ function Ingredients() {
     reason?: string
   ): void => {
     if (reason != "clickaway") {
-      console.log(reason);
       dispatch(resetError());
       setErrorSnackbarOpen(false);
     }
@@ -42,7 +41,6 @@ function Ingredients() {
     reason: string
   ): void => {
     if (reason != "clickaway") {
-      console.log(reason);
       dispatch(resetSuccessMessage());
       setSuccessSnackbarOpen(false);
     }
@@ -50,7 +48,6 @@ function Ingredients() {
 
   return (
     <div className="">
-      <UploadImage />
       <Snackbar
         open={errorSnackbarOpen}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
@@ -64,7 +61,7 @@ function Ingredients() {
         open={successSnackbarOpen}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         onClose={handleCloseSuccessSnackbar}
-        autoHideDuration={1000}
+        autoHideDuration={3000}
       >
         <Alert security="submit">{successMsg}</Alert>
       </Snackbar>

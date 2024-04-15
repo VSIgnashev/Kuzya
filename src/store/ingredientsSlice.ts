@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../api/axios";
 
-const GET_INGREDIENTS_URL = "/ingridients";
-const CREATE_INGREDIENT_URL = "/ingridients";
+const GET_INGREDIENTS_URL = "/ingredients";
+const CREATE_INGREDIENT_URL = "/ingredients";
 
 export type Ingredient = {
   name: string;
@@ -11,7 +11,12 @@ export type Ingredient = {
   fats: number;
   carbohydrates: number;
   id: string;
-  files: string[];
+  files: Image[];
+};
+
+type Image = {
+  purpose: string;
+  id: number;
 };
 
 export type IngredientPayload = {
@@ -20,7 +25,7 @@ export type IngredientPayload = {
   proteins: number;
   fats: number;
   carbohydrates: number;
-  files: string[];
+  files: Image[];
 };
 
 type IngredientsState = {

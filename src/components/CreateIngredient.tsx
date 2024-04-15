@@ -17,17 +17,39 @@ import {
   fetchIngredients,
 } from "../store/ingredientsSlice";
 import { createError, createSuccessMessage } from "../store/snackbarSlice";
+import useAppSelector from "../hooks/useAppSelector";
+
+import "./../utilities/uploadImageSt.scss";
+
+import {
+  getImage,
+  handleUploadImage,
+  removeImage,
+  removePreview,
+} from "../store/uploadImageSlice";
 
 type NumberInput = number | "";
+
+interface TransitionEvent {
+  elapsedTime: number;
+  propertyName: string;
+  pseudoElement: string;
+}
 
 interface CreateIngredientProps {
   children?: React.ReactElement;
 }
 
 const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
+  const ref = React.useRef(null);
   const dispatch = useAppDispatch();
+  const { imagePreview, isImageChosen } = useAppSelector(
+    (state) => state.uploadImage
+  );
 
   const [open, setOpen] = React.useState<boolean>(false);
+
+  const [imgResetAvailable, setImgResetAvailable] = useState<boolean>(false);
 
   const [name, setName] = useState<string>("");
   const [calories, setCalories] = useState<NumberInput>("");
@@ -47,6 +69,12 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
     setCarbohydrates("");
   };
 
+  const handleChooseImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event?.target?.files?.[0]) {
+      dispatch(getImage(event.target.files[0]));
+    }
+  };
+
   const handleNumberInput = (
     event: React.ChangeEvent<HTMLInputElement>,
     setState: React.Dispatch<React.SetStateAction<NumberInput>>
@@ -64,31 +92,52 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
   async function handleCreateIngredient(event: React.SyntheticEvent) {
     event.preventDefault();
     if (name && calories && proteins && fats && carbohydrates) {
-      const payload: IngredientPayload = {
-        name,
-        calories,
-        proteins,
-        fats,
-        carbohydrates,
-        files: [],
-      };
-      await dispatch(createIngredient(payload))
+      await dispatch(handleUploadImage())
         .unwrap()
-        .then((res) => {
-          dispatch(createSuccessMessage(res));
-        })
-        .catch((error) => {
-          if (error?.name == "AxiosError") {
-            dispatch(createError(error?.message));
+        .then(async (res) => {
+          if (res) {
+            const payload: IngredientPayload = {
+              name,
+              calories,
+              proteins,
+              fats,
+              carbohydrates,
+              files: [{ purpose: "0", id: res }],
+            };
+            console.log("payload\n" + payload);
+            await dispatch(createIngredient(payload))
+              .unwrap()
+              .then((res) => {
+                dispatch(createSuccessMessage(res));
+              })
+              .catch((error) => {
+                if (error?.name == "AxiosError") {
+                  dispatch(createError(error?.message));
+                }
+              })
+              .finally(() => {
+                setOpen(false);
+                dispatch(fetchIngredients());
+                discardCreation();
+                resetImage();
+              });
           }
         })
-        .finally(() => {
-          setOpen(false);
-          dispatch(fetchIngredients());
-          discardCreation();
-        });
+        .catch((error) => dispatch(createError(error?.message)));
     }
   }
+
+  const handleTransitionEnd = (event: TransitionEvent) => {
+    if (event.propertyName == "background-color" && isImageChosen) {
+      setImgResetAvailable(true);
+    }
+  };
+
+  const resetImage = () => {
+    setImgResetAvailable(false);
+    dispatch(removeImage());
+    setTimeout(() => dispatch(removePreview()), 500);
+  };
 
   return (
     <div className="mt-[50px]">
@@ -101,12 +150,65 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
       >
         <div className="modalWindow w-[200px]">
           <form autoComplete="false" onSubmit={handleCreateIngredient}>
-            <Card sx={{ width: 200, height: 400 }}>
-              <CardMedia
-                component="img"
-                sx={{ aspectRatio: 4 / 3 }}
-                image="./src/assets/placeholder-image.jpg"
-              />
+            <Card sx={{ width: 200, height: 400, position: "relative" }}>
+              <div className=" relative">
+                {imgResetAvailable && (
+                  <div
+                    className={imgResetAvailable ? "reset-button" : "hidden"}
+                    onClick={resetImage}
+                  >
+                    <img
+                      className="done-icon"
+                      src="./src/assets/file_download_done_black_24dp.svg"
+                    />
+                    <img
+                      className="reset-icon"
+                      src="./src/assets/clear_dark_red_24dp.svg"
+                    />
+                  </div>
+                )}
+                <label htmlFor="uploadFile" className="">
+                  <input
+                    ref={ref}
+                    type="file"
+                    className="hidden"
+                    disabled={isImageChosen}
+                    id="uploadFile"
+                    accept="image/*"
+                    onChange={handleChooseImage}
+                  />
+                  <img
+                    src="./src/assets/upload_file_black_24dp.svg"
+                    className={
+                      isImageChosen
+                        ? "upload-icon-invisible"
+                        : "upload-icon-visible"
+                    }
+                  />
+                  <div
+                    className={isImageChosen ? "preview" : "no-preview"}
+                  ></div>
+                </label>
+
+                <img
+                  src="./src/assets/file_download_done_black_24dp.svg"
+                  onTransitionEnd={handleTransitionEnd}
+                  className={
+                    isImageChosen && !imgResetAvailable
+                      ? "upload-done-icon-visible ass"
+                      : imgResetAvailable
+                      ? "hidden"
+                      : "upload-done-icon-invisible"
+                  }
+                />
+
+                <CardMedia
+                  component="img"
+                  sx={{ aspectRatio: 4 / 3 }}
+                  image={imagePreview}
+                />
+              </div>
+
               <CardContent>
                 <TextField
                   required
@@ -117,9 +219,10 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
                     setName(event.target.value)
                   }
                 />
+
                 <div className="mt-3 gap-y-1 flex flex-col items-start">
                   <div className="flex items-center">
-                    <Typography>Calories: </Typography>
+                    <Typography>Calories:</Typography>
                     <TextField
                       required
                       variant="standard"
@@ -170,6 +273,7 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
                       }
                     />
                   </div>
+
                   <Button type="submit">Create ingredient</Button>
                 </div>
               </CardContent>

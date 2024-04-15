@@ -1,9 +1,4 @@
-import {
-  PayloadAction,
-  StateFromReducersMapObject,
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../api/axios";
 import { RootState } from ".";
 
@@ -13,10 +8,11 @@ type UploadingState = {
   isUploadDone: boolean;
   image: File | null;
   imagePreview: string;
+  isImageChosen: boolean;
 };
 
 export const handleUploadImage = createAsyncThunk<
-  string,
+  number,
   undefined,
   { state: RootState }
 >("uploadImage/handleUploadImage", async (_, thunkApi) => {
@@ -27,16 +23,15 @@ export const handleUploadImage = createAsyncThunk<
     const response = await axios.post(UPLOAD_IMAGE_URL, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log(response);
+    return response?.data?.id;
   }
-
-  return "asd";
 });
 
 const initialState: UploadingState = {
   isUploadDone: false,
   image: null,
   imagePreview: "",
+  isImageChosen: false,
 };
 
 const uploadImageSlice = createSlice({
@@ -48,14 +43,20 @@ const uploadImageSlice = createSlice({
       action.payload
         ? (state.imagePreview = URL.createObjectURL(action.payload))
         : (state.imagePreview = "");
+      state.isImageChosen = true;
     },
     removeImage(state) {
       state.image = null;
+
+      state.isImageChosen = false;
+    },
+    removePreview(state) {
       state.imagePreview = "";
     },
   },
 });
 
-export const { getImage, removeImage } = uploadImageSlice.actions;
+export const { getImage, removeImage, removePreview } =
+  uploadImageSlice.actions;
 
 export default uploadImageSlice.reducer;

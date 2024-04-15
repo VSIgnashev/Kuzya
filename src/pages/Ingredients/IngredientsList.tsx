@@ -25,6 +25,7 @@ const IngredientsList: React.FC = () => {
               carbohydrates={item.carbohydrates}
               fats={item.fats}
               key={item.id}
+              imageId={item?.files[0]?.id ? item.files[0].id : undefined}
             />
           </>
         );

@@ -8,12 +8,17 @@ import {
 } from "@mui/material";
 import React from "react";
 
+import { BASE_URL } from "../api/axios";
+
+const DOWNLOAD_IMAGE_URL = "/files";
+
 interface IngredientCardProps {
   name: string;
   calories: number;
   proteins: number;
   fats: number;
   carbohydrates: number;
+  imageId?: number;
 }
 
 const IngredientCard: React.FC<IngredientCardProps> = ({
@@ -22,7 +27,8 @@ const IngredientCard: React.FC<IngredientCardProps> = ({
   proteins,
   fats,
   carbohydrates,
-}) => {
+  imageId,
+}: IngredientCardProps) => {
   return (
     <div>
       <CardActionArea sx={{}}>
@@ -30,7 +36,11 @@ const IngredientCard: React.FC<IngredientCardProps> = ({
           <CardMedia
             component="img"
             sx={{ aspectRatio: 4 / 3 }}
-            image="./src/assets/placeholder-image.jpg"
+            image={
+              imageId
+                ? BASE_URL + DOWNLOAD_IMAGE_URL + `/${imageId}`
+                : "./src/assets/placeholder-image.jpg"
+            }
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div" align="left">
