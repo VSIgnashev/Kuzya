@@ -15,6 +15,7 @@ import MealLists from "./pages/MealLists";
 import MealList from "./pages/MealList";
 import Header from "./components/Header";
 import Ingredients from "./pages/Ingredients";
+import CreateRecipe from "./pages/CreateRecipe";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         <Header></Header>
 
         <Routes>
-          <Route path="/" element={<MealLists />} />
+          <Route path="/" element={<CreateRecipe />} />
           <Route path="/meals" element={<Meals />} />
           <Route path="/*" element={<PageNotFound />} />
           <Route path="/mealList" element={<MealList />} />

@@ -18,17 +18,14 @@ import {
 } from "../store/ingredientsSlice";
 import { createError, createSuccessMessage } from "../store/snackbarSlice";
 import useAppSelector from "../hooks/useAppSelector";
-
 import "./../utilities/uploadImageSt.scss";
-
 import {
   getImage,
   handleUploadImage,
   removeImage,
   removePreview,
 } from "../store/uploadImageSlice";
-
-type NumberInput = number | "";
+import { handleNumberInput, NumberInput } from "../utilities/handleNumberInput";
 
 interface TransitionEvent {
   elapsedTime: number;
@@ -73,20 +70,6 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
     if (event?.target?.files?.[0]) {
       dispatch(getImage(event.target.files[0]));
     }
-  };
-
-  const handleNumberInput = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    setState: React.Dispatch<React.SetStateAction<NumberInput>>
-  ) => {
-    const value = event.target.value;
-    if (value == "") {
-      setCalories("");
-    }
-    if (!Number(value) || value.length > 3) {
-      return;
-    }
-    setState(Number(value));
   };
 
   async function handleCreateIngredient(event: React.SyntheticEvent) {
