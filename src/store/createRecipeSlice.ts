@@ -104,6 +104,9 @@ const createRecipeSlice = createSlice({
     createIngredient(state) {
       state.entries.push({ amount: "", measureId: "", ingredientId: "" });
     },
+    deleteIngredient(state, action: PayloadAction<number>) {
+      state.entries.splice(action.payload, 1);
+    },
   },
 });
 
@@ -118,6 +121,7 @@ export const {
   changeIngredientMeasure,
   changeIngredientName,
   createIngredient,
+  deleteIngredient,
 } = createRecipeSlice.actions;
 
 export default createRecipeSlice.reducer;
