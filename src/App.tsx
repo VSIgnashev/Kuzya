@@ -10,12 +10,13 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import Meals from "./pages/Meals";
+import { Meal } from "./pages/Meal";
 
-import MealLists from "./pages/MealLists";
 import MealList from "./pages/MealList";
 import Header from "./components/Header";
 import Ingredients from "./pages/Ingredients";
 import CreateRecipe from "./pages/CreateRecipe";
+import MealLists from "./pages/MealLists";
 
 function App() {
   return (
@@ -24,11 +25,13 @@ function App() {
         <Header></Header>
 
         <Routes>
-          <Route path="/" element={<CreateRecipe />} />
+          <Route path="/" element={<MealLists />} />
           <Route path="/meals" element={<Meals />} />
           <Route path="/*" element={<PageNotFound />} />
           <Route path="/mealList" element={<MealList />} />
           <Route path="/ingredients" element={<Ingredients />} />
+          <Route path="/createMeal" element={<CreateRecipe />} />
+          <Route path="/recipes/:recipeId" element={<Meal />} />
         </Routes>
       </ThemeProvider>
     </div>

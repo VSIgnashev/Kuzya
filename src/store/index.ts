@@ -3,6 +3,7 @@ import ingredientsReducer from "./ingredientsSlice";
 import snackbarReducer from "./snackbarSlice";
 import uploadImageReducer from "./uploadImageSlice";
 import createRecipeSlice from "./createRecipeSlice";
+import recipesSlice from "./recipesSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     snackbars: snackbarReducer,
     uploadImage: uploadImageReducer,
     createRecipe: createRecipeSlice,
+    recipes: recipesSlice,
   },
 });
 

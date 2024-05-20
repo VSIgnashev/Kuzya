@@ -16,7 +16,7 @@ type Entry = {
 // };
 
 type Step = {
-  step: string;
+  step: number;
   description: string;
 };
 
@@ -30,7 +30,7 @@ type CreateRecipeState = {
 };
 
 export const createRecipe = createAsyncThunk<
-  boolean,
+  string,
   number,
   { state: RootState }
 >("createRecipe/createRecipe", async (imageId, thunkApi) => {
@@ -38,23 +38,23 @@ export const createRecipe = createAsyncThunk<
   const payload = {
     name: state.createRecipe.name,
     entries: state.createRecipe.entries,
-    instruction: state.createRecipe.instruction,
+    steps: state.createRecipe.instruction,
     requiredTools: state.createRecipe.requiredTools,
     files: [{ purpose: "0", id: imageId }],
-    servingsQty: state.createRecipe.servingsQty,
-    time: state.createRecipe.time,
+    servingsCount: state.createRecipe.servingsQty,
+    cookingTime: state.createRecipe.time,
   };
 
   const response = await axios.post(CREATE_RECIPE_URL, payload);
   console.log(response);
 
-  return false;
+  return "Recipe successfully created";
 });
 
 const initialState: CreateRecipeState = {
   name: "",
   entries: [{ amount: "", measureId: "", ingredientId: "" }],
-  instruction: [],
+  instruction: [{ step: 1, description: "" }],
   requiredTools: [],
   servingsQty: "",
   time: "",
@@ -64,6 +64,15 @@ const createRecipeSlice = createSlice({
   name: "creteSlice",
   initialState,
   reducers: {
+    resetRecipe(state) {
+      state.name = "";
+
+      state.entries = [{ amount: "", measureId: "", ingredientId: "" }];
+      state.instruction = [{ step: 1, description: "" }];
+      state.requiredTools = [];
+      state.servingsQty = "";
+      state.time = "";
+    },
     changeName(state, action: PayloadAction<string>) {
       state.name = action.payload;
     },
@@ -107,10 +116,36 @@ const createRecipeSlice = createSlice({
     deleteIngredient(state, action: PayloadAction<number>) {
       state.entries.splice(action.payload, 1);
     },
+    addStep(state) {
+      state.instruction.push({
+        step: state.instruction.length + 1,
+        description: "",
+      });
+    },
+    changeStep(
+      state,
+      action: PayloadAction<{ arrayIndex: number; description: string }>
+    ) {
+      state.instruction[action.payload.arrayIndex].step =
+        action.payload.arrayIndex + 1;
+      state.instruction[action.payload.arrayIndex].description =
+        action.payload.description;
+    },
+    deleteStep(state, action: PayloadAction<number>) {
+      state.instruction.splice(action.payload, 1);
+      for (
+        let index = action.payload;
+        index < state.instruction.length;
+        index++
+      ) {
+        state.instruction[index].step -= 1;
+      }
+    },
   },
 });
 
 export const {
+  resetRecipe,
   changeName,
   changeEntries,
   changeInstruction,
@@ -122,6 +157,9 @@ export const {
   changeIngredientName,
   createIngredient,
   deleteIngredient,
+  changeStep,
+  addStep,
+  deleteStep,
 } = createRecipeSlice.actions;
 
 export default createRecipeSlice.reducer;

@@ -37,7 +37,10 @@ function Header() {
     <AppBar>
       <Container maxWidth="lg">
         <Toolbar className="justify-around" disableGutters>
-          <Link to="/" className=" flex text-white hover:text-white">
+          <Link
+            to="/"
+            className=" text-white hover:text-white xs:hidden md:flex"
+          >
             <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
             <Typography
               variant="h6"

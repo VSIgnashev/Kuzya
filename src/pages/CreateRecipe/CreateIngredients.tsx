@@ -28,11 +28,7 @@ export const CreateIngredientsCard: React.FC = () => {
   const { entries } = useAppSelector((state) => state.createRecipe);
 
   const measures = [
-    {
-      name: "Grams",
-
-      id: 1,
-    },
+    { name: "Grams", id: 1 },
     { name: "tbs", id: 2 },
     { name: "kg", id: 3 },
   ];
@@ -81,7 +77,6 @@ export const CreateIngredientsCard: React.FC = () => {
                 size="medium"
                 variant="outlined"
                 value={String(item.measureId)}
-                label="Unit"
                 onChange={(event: SelectChangeEvent) => {
                   const newValue = Number(event.target.value);
 
