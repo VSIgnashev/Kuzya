@@ -81,11 +81,13 @@ const CreateIngredient: React.FC<CreateIngredientProps> = ({ children }) => {
           if (res) {
             const payload: IngredientPayload = {
               name,
-              calories,
-              proteins,
-              fats,
-              carbohydrates,
-              files: [{ purpose: "0", id: res }],
+              nutrients: {
+                calories,
+                proteins,
+                fats,
+                carbohydrates,
+              },
+              avatarId: res,
             };
             console.log("payload\n" + payload);
             await dispatch(createIngredient(payload))

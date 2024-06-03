@@ -21,11 +21,13 @@ type Image = {
 
 export type IngredientPayload = {
   name: string;
-  calories: number;
-  proteins: number;
-  fats: number;
-  carbohydrates: number;
-  files: Image[];
+  nutrients: {
+    calories: number;
+    proteins: number;
+    fats: number;
+    carbohydrates: number;
+  };
+  avatarId: number;
 };
 
 type IngredientsState = {
