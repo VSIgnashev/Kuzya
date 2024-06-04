@@ -14,6 +14,9 @@ const IngredientsList: React.FC = () => {
 
   return (
     <>
+      <div className="mt-20" onClick={() => console.log(typeof ingredients)}>
+        asaasddsas
+      </div>
       {ingredients.map((item) => {
         return (
           <>
