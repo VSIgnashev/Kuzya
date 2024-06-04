@@ -6,12 +6,14 @@ const CREATE_INGREDIENT_URL = "/ingredients";
 
 export type Ingredient = {
   name: string;
-  calories: number;
-  proteins: number;
-  fats: number;
-  carbohydrates: number;
+  nutrients: {
+    calories: number;
+    proteins: number;
+    fats: number;
+    carbohydrates: number;
+  };
   id: string;
-  files: Image[];
+  avatarId: number;
 };
 
 type Image = {
