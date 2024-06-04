@@ -19,12 +19,12 @@ const IngredientsList: React.FC = () => {
           <>
             <IngredientCard
               name={item.name}
-              calories={item.calories}
-              proteins={item.proteins}
-              carbohydrates={item.carbohydrates}
-              fats={item.fats}
+              calories={item.nutrients.calories}
+              proteins={item.nutrients.proteins}
+              carbohydrates={item.nutrients.carbohydrates}
+              fats={item.nutrients.fats}
               key={item.id}
-              imageId={item?.files[0]?.id ? item.files[0].id : undefined}
+              imageId={item.avatarId}
             />
           </>
         );
