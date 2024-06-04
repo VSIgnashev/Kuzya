@@ -43,11 +43,12 @@ export const fetchIngredients = createAsyncThunk<
   { rejectValue: string }
 >("ingredients/fetchIngredients", async function (_, { rejectWithValue }) {
   const response = await axios.get(GET_INGREDIENTS_URL);
-  if (response.statusText != "OK") {
+
+  if (response.status != 200) {
     return rejectWithValue(response.statusText);
   }
 
-  return response.data.values;
+  return response.data;
 });
 
 export const createIngredient = createAsyncThunk<
